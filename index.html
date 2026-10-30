@@ -1,0 +1,293 @@
+<meta charset="utf-8">
+<title>Gravefield</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Cinzel:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+
+<div class="app" id="app">
+  <div class="ascov" id="ascOv" hidden role="dialog" aria-label="Ascension">
+    <canvas id="ascCv"></canvas>
+    <div class="ashead"><div class="astitle">Ascension</div><div class="assub" id="ascSub"></div></div>
+    <div class="asfoot"><button class="asb" id="ascUnravel" type="button">Unravel</button><button class="asb" id="ascBack" type="button">Return</button></div>
+    <div class="astip" id="ascTip" hidden></div>
+  </div>
+  <main class="game" id="game">
+    <button class="ascbtn" id="ascBtn" type="button" title="Ascend: spend Ascension points (1 for every 5 stages)"><i class="asig"></i><span class="atx">Ascend</span><b id="ascPts">0</b></button>
+    <canvas id="cv" tabindex="0" aria-label="Game field. Move with WASD and hold the mouse button to shoot where you aim."></canvas>
+    <div class="hud">
+      <div class="frame vitals hudel" id="vitals" data-label="Health & XP">
+        <div class="lvl"><small>LV</small><b id="lvTxt">1</b></div>
+        <div class="pbar hp"><i id="hpFill"></i></div><span id="hpTxt">50/50</span>
+        <div class="pbar xp"><i id="xpFill"></i></div><span id="xpTxt">0/50</span>
+      </div>
+      <div class="frame stagebar hudel" id="stageBar" data-label="Stage">
+        <div class="sbl"><span id="sbLabel">Stage 1</span><span class="instag" id="insTag" hidden>INSANE</span><span class="tmr" id="timerTxt" title="Time played on this save">0:00</span><span class="cnt" id="sbCount">0 / 24</span></div>
+        <div class="pbar prog"><i id="progFill"></i></div>
+      </div>
+      <div class="frame hudgold hudel" id="hudGoldBox" data-label="Gold (shop hidden)"><i class="coin"></i><span id="hudGold">0</span><button class="pbtn sq" id="hudOpt" type="button" title="Options (Esc)" aria-label="Options"><i data-icon="gear"></i></button><button class="pbtn" id="hudMenu" type="button">Menu</button></div>
+    </div>
+    <button class="pbtn shoptab" id="shopTab" type="button" aria-controls="shopPanel" aria-expanded="true" title="Hide or show the shop (B)">Shop ▸</button>
+    <div class="frame banner" id="banner" hidden></div>
+    <div class="died" id="diedOv" hidden role="alertdialog" aria-labelledby="diedTitle">
+      <div class="dband"><h2 class="dtitle" id="diedTitle">You Died</h2></div>
+      <div class="frame dsum" id="diedSum"></div>
+      <button class="pbtn dbtn" id="diedBtn" type="button">Rise again</button>
+    </div>
+    <div class="overlay elitov" id="eliteOv" hidden role="dialog" aria-labelledby="eliteName">
+      <div class="frame elitecard" id="eliteCard">
+        <div class="eband"><span>New elite</span><span>The game is paused</span></div>
+        <div class="ebody">
+          <div class="eport"><canvas id="eliteCv" width="96" height="96"></canvas></div>
+          <div class="etxt"><h3 id="eliteName"></h3><p class="etip" id="eliteTip"></p><p class="ehow" id="eliteHow"></p></div>
+        </div>
+        <button class="pbtn eok" id="eliteOk" type="button">Got it <kbd>Space</kbd></button>
+      </div>
+    </div>
+    <div class="overlay paused" id="pausedOv" hidden><div class="frame">Paused<small>Press P or Pause to keep hunting</small></div></div>
+    <div class="overlay" id="lvlOv" hidden>
+      <div class="lvlup">
+        <h2 id="lvlTitle">Level up!</h2>
+        <p>Pick one skill. Press 1, 2 or 3.</p>
+        <div class="cards" id="cards"></div>
+      </div>
+    </div>
+    <div class="toasts hudel" id="toasts" aria-live="polite" data-label="Notifications"></div>
+    <div class="buffs hudel" id="buffs" data-label="Power-ups"></div>
+    <div class="mmbox hudel" id="mmBox" data-label="Minimap"></div>
+    <div class="frame hudbar" id="hudBar" hidden>
+      <b>HUD editor</b>
+      <small>Drag any outlined piece where you like it. It is saved on this device.</small>
+      <div class="hbtns"><button class="pbtn" id="hudReset" type="button">Reset layout</button><button class="pbtn" id="hudDone" type="button">Done</button></div>
+    </div>
+    <div class="abil hudel" id="abil" data-label="Abilities">
+      <button class="ab" id="abQ" type="button"><img alt=""><kbd>Q</kbd><i class="cdov"></i><span class="cdt"></span></button>
+      <button class="ab" id="abE" type="button"><img alt=""><kbd>E</kbd><i class="cdov"></i><span class="cdt"></span></button>
+    </div>
+    <div class="frame admin" id="adminPanel" hidden>
+      <h3>Admin <button class="pbtn" id="adminClose" type="button" aria-label="Close admin panel">X</button></h3>
+      <div class="arow"><span>No damage <button class="pbtn" id="godBtn" type="button" aria-pressed="false">Off</button></span></div>
+      <div class="arow">
+        <span>Add gold</span>
+        <div class="line"><input id="goldAmt" inputmode="decimal" value="10k" aria-label="Gold amount (you can write 5k, 2m, 1b)"><button class="pbtn" id="goldAdd" type="button">Add</button></div>
+        <div class="quick"><button class="pbtn" type="button" data-gold="1000">+1K</button><button class="pbtn" type="button" data-gold="100000">+100K</button><button class="pbtn" type="button" data-gold="10000000">+10M</button></div>
+      </div>
+      <div class="arow">
+        <span>Add XP</span>
+        <div class="line"><input id="xpAmt" inputmode="decimal" value="500" aria-label="XP amount (you can write 5k, 2m)"><button class="pbtn" id="xpAdd" type="button">Add</button></div>
+        <div class="quick"><button class="pbtn" type="button" data-lv="1">+1 level</button><button class="pbtn" type="button" data-lv="5">+5 levels</button></div>
+      </div>
+      <div class="arow">
+        <span>Stage <small id="adminStage"></small></span>
+        <div class="line"><input id="stageAmt" inputmode="numeric" value="10" aria-label="Stage to jump to"><button class="pbtn" id="stageGo" type="button">Go</button></div>
+        <div class="quick"><button class="pbtn" type="button" data-st="-1">-1</button><button class="pbtn" type="button" data-st="1">+1</button><button class="pbtn" type="button" data-st="10">+10</button></div>
+      </div>
+      <div class="arow"><span>See whole Backrooms <button class="pbtn" id="seeAllBtn" type="button" aria-pressed="false" title="Lights the Backrooms up and shows every monster on the minimap">Off</button></span></div>
+      <div class="arow">
+        <span>Map</span>
+        <div class="maprow" id="mapRow" role="radiogroup" aria-label="Map"></div>
+      </div>
+      <div class="arow">
+        <span>Chests</span>
+        <div class="quick"><button class="pbtn" type="button" data-chest="0">+ Chest</button><button class="pbtn" type="button" data-chest="1">+ Golden</button></div>
+      </div>
+      <div class="arow">
+        <span>Balance <button class="pbtn" id="balReset" type="button">Reset</button></span>
+        <div class="bal" id="balList"></div>
+        <small>Live tuning while you play-test. It only applies while admin tools are on.</small>
+      </div>
+    </div>
+  </main>
+
+  <aside class="panel" id="shopPanel">
+    <div class="phead">
+      <div class="brand">
+        <div class="logo">Gravefield</div>
+        <div class="tbtns">
+          <button class="pbtn" id="menuBtn" type="button">Menu</button>
+          <button class="pbtn sq" id="optBtn" type="button" title="Options (Esc)" aria-label="Options"><i data-icon="gear"></i></button>
+          <button class="pbtn" id="soundBtn" type="button" aria-pressed="true" hidden>Sound</button>
+          <button class="pbtn" id="pauseBtn" type="button" aria-pressed="true">Pause</button>
+        </div>
+      </div>
+      <div class="frame board">
+        <div class="wallet">
+          <div class="money"><i class="coin"></i><span id="goldTxt">0</span></div>
+          <span class="killcount" id="killsTxt">0 monsters slain</span>
+        </div>
+        <div class="stagebox">
+          <button class="pbtn stbtn" id="stPrev" type="button" aria-label="Previous stage">&lt;</button>
+          <div class="stname"><b id="stageTxt">Stage 1</b><small id="bestTxt">Best 1</small></div>
+          <button class="pbtn stbtn" id="stNext" type="button" aria-label="Next stage">&gt;</button>
+          <label class="auto"><input type="checkbox" id="autoChk" checked> Auto-advance</label>
+        </div>
+        <div class="stats" id="statsBox"></div>
+      </div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-weapons" data-tab="weapons" aria-selected="true">Weapons <span class="pill" id="pill-weapons" hidden></span></button>
+      <button class="tab" role="tab" id="tab-armor" data-tab="armor" aria-selected="false">Armor <span class="pill" id="pill-armor" hidden></span></button>
+      <button class="tab" role="tab" id="tab-relics" data-tab="relics" aria-selected="false">Relics <span class="pill" id="pill-relics" hidden></span></button>
+    </div>
+    <div class="frame shop"><div class="list" id="list" role="tabpanel"></div></div>
+    <div class="pfoot"><button class="pbtn reset" id="adminBtn" type="button" aria-expanded="false">Admin</button><button class="pbtn reset" id="resetBtn" type="button">Reset progress</button></div>
+  </aside>
+</div>
+
+<div class="frame rtip" id="rtip" role="tooltip" hidden></div>
+
+<div class="menu" id="menu">
+  <canvas id="menuCv" aria-hidden="true"></canvas>
+  <div class="mtitle"><div class="logo">Gravefield</div><p>The dead won't stay buried.</p></div>
+  <div class="mbtns" id="mMain">
+    <div class="mrow">
+      <button class="pbtn play" id="mPlay" type="button">PLAY</button>
+      <button class="pbtn insane" id="mInsane" type="button" aria-pressed="false" title="Level-up skills give double and stack multiplicatively (armor and regeneration stay normal). Double XP and gold.">INSANE MODE<small>OFF</small></button>
+    </div>
+    <button class="pbtn" id="mLoad" type="button">LOAD SAVE</button>
+    <button class="pbtn daily" id="mDailyBtn" type="button">DAILY CHALLENGE</button>    <button class="pbtn" id="mAchBtn" type="button">ACHIEVEMENTS</button>
+    <button class="pbtn" id="mHowBtn" type="button">HOW TO PLAY</button>
+    <button class="pbtn out" id="mLogout" type="button">LOG OUT</button>
+    <div class="micons">
+      <button class="pbtn sq" id="mBoardBtn" type="button" title="Leaderboard" aria-label="Leaderboard"><i data-icon="trophy"></i></button>
+      <button class="pbtn sq" id="mSettings" type="button" title="Settings" aria-label="Settings"><i data-icon="gear"></i></button>
+      <button class="pbtn sq" id="mBestBtn" type="button" title="Bestiary" aria-label="Bestiary"><i data-icon="book"></i></button>
+    </div>
+  </div>
+  <div class="frame msheet" id="mSet" hidden>
+    <h2 id="setTitle">Settings</h2>
+    <div class="srow">Auto shoot <button class="pbtn" id="setAutoShoot" type="button" aria-pressed="false">Off</button></div>
+    <div class="srow">Sound <button class="pbtn" id="setSound" type="button" aria-pressed="true">On</button></div>
+    <div class="srow">Music <button class="pbtn" id="setMusic" type="button" aria-pressed="true">On</button></div>
+    <div class="srow"><label for="setVol">Volume</label><input type="range" id="setVol" min="0" max="100" step="5"></div>
+    <div class="srow">Screen shake <button class="pbtn" id="setShake" type="button" aria-pressed="true">On</button></div>
+    <div class="srow">Damage numbers <button class="pbtn" id="setNums" type="button" aria-pressed="true">On</button></div>
+    <div class="srow">Zoom <span class="zoomctl"><button class="pbtn" id="zoomOut" type="button" aria-label="Zoom out">−</button><b id="zoomTxt">Normal</b><button class="pbtn" id="zoomIn" type="button" aria-label="Zoom in">+</button></span></div>
+    <div class="srow">Controls <button class="pbtn" id="setKeys" type="button">Change keys</button></div>
+    <div class="srow">Admin tools <button class="pbtn" id="setAdmin" type="button" aria-pressed="false">Off</button></div>
+    <p class="snote" id="adminNote" hidden>Any save you open the admin panel on gets marked: it can't post online scores or earn achievements. Click again to turn admin tools on.</p>
+    <div class="srow" id="hudRow">HUD layout <button class="pbtn" id="setHud" type="button">Edit HUD</button></div>
+    <button class="pbtn wide" id="setBack" type="button">Back</button>
+    <button class="pbtn wide out" id="setMain" type="button">Main menu</button>
+  </div>
+  <div class="frame msheet howsheet" id="mHow" hidden>
+    <h2>How to play</h2>
+    <div id="howBody"></div>
+    <button class="pbtn wide" id="howBack" type="button">Back</button>
+  </div>
+  <div class="frame msheet" id="mKeys" hidden>
+    <h2>Controls</h2>
+    <p id="keyNote">Click a key, then press the new one. Esc cancels.</p>
+    <div class="klist" id="keyList"></div>
+    <div class="kbtns"><button class="pbtn" id="keyReset" type="button">Reset to default</button><button class="pbtn" id="keyBack" type="button">Back</button></div>
+  </div>
+  <div class="slots" id="mSlots" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="slotBack" type="button">&lt; Back</button>
+      <h2 class="logo">Load Save</h2>
+      <span class="slotnote">3 slots · saved on this device</span>
+    </div>
+    <div class="slotlist" id="slotList"></div>
+  </div>
+  <div class="slots" id="mClass" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="classBack" type="button">&lt; Back</button>
+      <h2 class="logo">Choose your class</h2>
+      <span class="slotnote">Your class is fixed for this save</span>
+    </div>
+    <div class="classgrid" id="classGrid"></div>
+  </div>
+  <div class="slots" id="mMapSel" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="mapSelBack" type="button">&lt; Back</button>
+      <h2 class="logo">Choose your map</h2>
+      <span class="slotnote">Your map is fixed for this save</span>
+    </div>
+    <div class="classgrid mapgrid" id="mapGrid"></div>
+  </div>
+  <div class="slots" id="mBoard" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="boardBack" type="button">&lt; Back</button>
+      <h2 class="logo">Leaderboard</h2>
+      <label class="nick">Your name <input id="nickIn" maxlength="16" placeholder="Hunter" autocomplete="off"></label>
+    </div>
+    <div class="btabs" role="tablist">
+      <button class="pbtn" type="button" data-board="local" aria-pressed="true">This device</button>
+      <button class="pbtn" type="button" data-board="online" aria-pressed="false">Online</button>
+      <button class="pbtn" type="button" data-board="daily" aria-pressed="false">Today's daily</button>
+    </div>
+    <p class="bnote" id="boardNote" hidden></p>
+    <div class="board-list" id="boardList"></div>
+  </div>
+  <div class="slots" id="mBest" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="bestBack" type="button">&lt; Back</button>
+      <h2 class="logo">Bestiary</h2>
+      <span class="slotnote">Everything that lives, dies and kills in Gravefield</span>
+    </div>
+    <div class="btabs" role="tablist" id="bestTabs">
+      <button class="pbtn" type="button" data-best="mon" aria-pressed="true">Monsters</button>
+      <button class="pbtn" type="button" data-best="boss" aria-pressed="false">Bosses</button>
+      <button class="pbtn" type="button" data-best="elite" aria-pressed="false">Elites</button>
+      <button class="pbtn" type="button" data-best="weapon" aria-pressed="false">Weapons</button>
+      <button class="pbtn" type="button" data-best="armor" aria-pressed="false">Armor</button>
+      <button class="pbtn" type="button" data-best="power" aria-pressed="false">Power-ups</button>
+      <button class="pbtn" type="button" data-best="relic" aria-pressed="false">Relics</button>
+      <button class="pbtn" type="button" data-best="pet" aria-pressed="false">Pets</button>
+      <button class="pbtn" type="button" data-best="mode" aria-pressed="false">Modes</button>
+    </div>
+    <div class="bestclass" id="bestClass" hidden></div>
+    <p class="bnote" id="bestNote"></p>
+    <div class="bestgrid" id="bestGrid"></div>
+  </div>
+  <div class="slots" id="mAch" hidden>
+    <div class="slothead">
+      <button class="pbtn" id="achBack" type="button">&lt; Back</button>
+      <h2 class="logo">Achievements</h2>
+      <span class="slotnote" id="achCount"></span>
+    </div>
+    <div class="achgrid" id="achGrid"></div>
+  </div>
+  <div class="frame msheet" id="mDaily" hidden>
+    <h2>Daily Challenge</h2>
+    <p id="dailyDate"></p>
+    <div class="dplan" id="dailyPlan"></div>
+    <p>You have <b>10 minutes</b>. Get as far as you can: your score is the highest stage you reach, then your kills. Everyone gets the same challenge today.</p>
+    <p class="dbest" id="dailyBest"></p>
+    <button class="pbtn wide play" id="dailyGo" type="button">Start</button>
+    <button class="pbtn wide" id="dailyBack" type="button">Back</button>
+  </div>
+  <div class="frame msheet dialog" id="mDialog" role="alertdialog" aria-labelledby="dlgTitle" aria-describedby="dlgText" hidden>
+    <h2 id="dlgTitle"></h2>
+    <p id="dlgText"></p>
+    <div class="dlgbtns"><button class="pbtn play" id="dlgYes" type="button"></button><button class="pbtn" id="dlgNo" type="button"></button></div>
+  </div>
+  <div class="frame msheet" id="mOut" hidden>
+    <h2>Logged out</h2>
+    <p>Your hunter, gold and gear are saved on this device. The graves will be waiting.</p>
+    <button class="pbtn wide play" id="mLogin" type="button">Log back in</button>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/state.js"></script>
+<script src="js/ascension-data.js"></script>
+<script src="js/loot.js"></script>
+<script src="js/helpers.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/world.js"></script>
+<script src="js/maps.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/backrooms.js"></script>
+<script src="js/stages.js"></script>
+<script src="js/biomes.js"></script>
+<script src="js/player.js"></script>
+<script src="js/update.js"></script>
+<script src="js/render.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/input.js"></script>
+<script src="js/ascension.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/meta.js"></script>
+<script src="js/main.js"></script>
