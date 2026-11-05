@@ -1,0 +1,4 @@
+# published byte for byte: manifest.json holds hashes of these exact files
+index.html -text
+style.css -text
+js/* -text

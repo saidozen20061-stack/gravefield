@@ -1,0 +1,125 @@
+{
+ "version": 1793847202974,
+ "files": [
+  {
+   "path": "index.html",
+   "size": 18749,
+   "sha256": "1d4aca64c3b63a4ce90c71f58603504e219f16d986da1bb6b211a7823c405d1d"
+  },
+  {
+   "path": "style.css",
+   "size": 60095,
+   "sha256": "1b85aea00f817426613690c577663a2f77f55422d6e5eb041a7321798c720e1e"
+  },
+  {
+   "path": "js/ascension-data.js",
+   "size": 4500,
+   "sha256": "96f337b4ebbbf9414deef7da758b5c401b20c3665964347f1ef67629c84762ee"
+  },
+  {
+   "path": "js/ascension.js",
+   "size": 17374,
+   "sha256": "ace06417f11b31023bdf93a9048b037aaffc63f0146ab001bcd0047cc7ccc2d9"
+  },
+  {
+   "path": "js/audio.js",
+   "size": 23126,
+   "sha256": "81f23f4531e2a2ce8ab1972e9adfae808fa2291c3fabbeb423fa4bb7b965479a"
+  },
+  {
+   "path": "js/backrooms.js",
+   "size": 14518,
+   "sha256": "494f2d22df7543b548577f01fb219fda99b1a26c31e38db6a53db046aaa77dc3"
+  },
+  {
+   "path": "js/biomes.js",
+   "size": 11039,
+   "sha256": "20e13edf233e7ac6a96f08e91c6bc2d905c162db33d69f79775cd6f8e095001e"
+  },
+  {
+   "path": "js/combat.js",
+   "size": 66989,
+   "sha256": "b5ffd759175dc4f20787d3b8152b59c17531dfe01b595ba2e5d6fd28fa4f4866"
+  },
+  {
+   "path": "js/data.js",
+   "size": 52288,
+   "sha256": "cd3758e222a6f0732223ff4b2ee5587ef98f0fd8ae69e23ce2d3a0b593b51f78"
+  },
+  {
+   "path": "js/helpers.js",
+   "size": 968,
+   "sha256": "1040d2145b0be1ef970afccdfa45b77e61d2001813357d88b5d26f2c8cbe76af"
+  },
+  {
+   "path": "js/hud.js",
+   "size": 29131,
+   "sha256": "958b2cd6b762f72838d108a2eb85833e16de6ef2071569c5084b6337359cbf6a"
+  },
+  {
+   "path": "js/input.js",
+   "size": 10200,
+   "sha256": "b91b11d56d08544df0dab5ffe03aaa08fb13c8e3274eaa6a3e53cde1e15eb2ab"
+  },
+  {
+   "path": "js/loot.js",
+   "size": 13091,
+   "sha256": "26ac31ce7a5463b18e20dfbd035211d58f38002d9fc0e0d72c80660728616c8b"
+  },
+  {
+   "path": "js/main.js",
+   "size": 1372,
+   "sha256": "98c2dcada767bcaec1d305f73c335f3fb1933add3d82f5f5f4eefee972a277df"
+  },
+  {
+   "path": "js/maps.js",
+   "size": 38024,
+   "sha256": "735c3bf06d6d7a7bddb2d68b5a0e6afcc952519ac85e44ca89aa53dd311a4223"
+  },
+  {
+   "path": "js/menu.js",
+   "size": 27573,
+   "sha256": "415b3f1e988ca848cc6834bad60a3e73fb67c55c553c5fd111e85af5867cc31a"
+  },
+  {
+   "path": "js/meta.js",
+   "size": 34401,
+   "sha256": "ccd44d8cf3ed02153c2ac073e89a92a069c9cbda71d8e567453f5b1d7f1e287b"
+  },
+  {
+   "path": "js/player.js",
+   "size": 29747,
+   "sha256": "a94c188c1e332ee9367595ebcbf12a295533a98799b373219b45b47eff6320e1"
+  },
+  {
+   "path": "js/render.js",
+   "size": 43766,
+   "sha256": "437e95bee39b14b725b384f0f27b0ef13d242476e7cf2107683aaa129ab0f6e8"
+  },
+  {
+   "path": "js/sprites.js",
+   "size": 37413,
+   "sha256": "8c0e34b2fde15a1ab67d8e42b2f7676e63a2398751d37fe21d35553d071cbd5b"
+  },
+  {
+   "path": "js/stages.js",
+   "size": 9521,
+   "sha256": "37badce779d0ecc38ece7ad0c419031ab2036072ee2b093fbb11f9323c42106d"
+  },
+  {
+   "path": "js/state.js",
+   "size": 8414,
+   "sha256": "e396b6d8878c6b4d51399418c9ec8354946e37a7fe73015c92a7e488f71fdb5f"
+  },
+  {
+   "path": "js/update.js",
+   "size": 26435,
+   "sha256": "22cc79290d8a88e2cb262d7fedce4db96e4bec2ded435ba7662b83a01d1b98fd"
+  },
+  {
+   "path": "js/world.js",
+   "size": 19643,
+   "sha256": "0a465456b35bd3b896cb99f26d4c97a7d986c3b4f588299dd531ce3b92d38007"
+  }
+ ]
+}

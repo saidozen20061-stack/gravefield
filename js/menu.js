@@ -10,7 +10,14 @@
   const LEAVES = Array.from({ length: 22 }, () => ({ x: mr(), y: mr(), s: 0.5 + mr(), p: mr() * 6.28, c: ['#d9702a', '#b8462a', '#e8a33a', '#8a5a2b'][mr() * 4 | 0] }));
   const FOG = Array.from({ length: 7 }, (_, i) => ({ x: mr(), y: 0.3 + mr() * 0.6, s: 0.6 + mr() * 0.8, r: 0.25 + mr() * 0.2, i }));
   const EYES = { skeleton: '255,70,40', zombie: '255,60,60', cyclops: '255,210,80', ghost: '140,190,255', bat: '255,60,60' };
+  // the menu scene always plays out on the grass of Chapel Field, whichever map the save is on
   function renderMenu(t) {
+    const back = curMap;
+    if (back !== 0) loadMap(0);
+    drawMenuScene(t);
+    if (back !== 0) loadMap(back);
+  }
+  function drawMenuScene(t) {
     const dt = MS.last ? Math.min(0.05, Math.max(0, t - MS.last)) : 0; MS.last = t;
     const r = mcv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
     const W = Math.max(1, Math.round(r.width * dpr)), H = Math.max(1, Math.round(r.height * dpr));

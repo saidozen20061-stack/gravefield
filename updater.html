@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Gravefield</title>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #1d2b12; color: #fff2cf; font: 600 16px Georgia, serif; }
+  img { width: 128px; height: 128px; image-rendering: pixelated; }
+  h1 { margin: 0; font-size: 34px; color: #ffcf4a; letter-spacing: 2px; }
+  #bar { width: min(480px, 80vw); height: 22px; padding: 3px; box-sizing: border-box; border: 3px solid #2a1406; background: #3a2412; }
+  #fill { width: 0; height: 100%; background: #ffcf4a; }
+</style>
+<img src="build/icon.png" alt="">
+<h1>GRAVEFIELD</h1>
+<div id="status">Checking for updates…</div>
+<div id="bar"><div id="fill"></div></div>
+<script>
+  const fmt = n => (n / 1048576).toFixed(n < 10485760 ? 2 : 1) + ' MB';
+  window.updater.onProgress(({ done, total, label }) => {
+    if (label) document.getElementById('status').textContent = label;
+    if (!total) return;
+    document.getElementById('fill').style.width = Math.round(done / total * 100) + '%';
+    document.getElementById('status').textContent = `Downloading update… ${Math.round(done / total * 100)}% (${fmt(done)} of ${fmt(total)})`;
+  });
+</script>

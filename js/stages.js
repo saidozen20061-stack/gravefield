@@ -84,11 +84,17 @@
   const BOSS_MOVES = {
     slime: ['summon', 'slam'], bat: ['summon', 'ring', 'charge'], skeleton: ['summon', 'ring', 'slam'],
     zombie: ['summon', 'slam', 'charge'], ghost: ['summon', 'ring', 'blink'], cyclops: ['summon', 'slam', 'charge', 'ring'],
+    spider: ['summon', 'ring', 'charge'], harpy: ['summon', 'ring', 'blink'], gargoyle: ['summon', 'slam', 'charge'], banshee: ['summon', 'ring', 'blink'],
+    ogre: ['summon', 'slam', 'charge'], darkknight: ['summon', 'slam', 'charge', 'ring'], demon: ['summon', 'slam', 'ring', 'blink'],
   };
   const BOSS_TIP = {
     slime: 'Summons slimes, slams the ground, splits when it dies', bat: 'Summons bats, fires bullet rings, charges',
     skeleton: 'Raises skeletons, fires bone rings, slams the ground', zombie: 'Raises zombies, slams the ground, charges',
     ghost: 'Summons ghosts, fires spirit rings, teleports', cyclops: 'Summons cyclopes, slams, charges and fires rings',
+    spider: 'Hatches spiders, spits webs in a ring, charges', harpy: 'Calls harpies, fires feather rings, teleports',
+    gargoyle: 'Wakes gargoyles, slams the ground, charges', banshee: 'Summons banshees, fires screaming rings, teleports',
+    ogre: 'Calls ogres, slams the ground, charges', darkknight: 'Raises dark knights, slams, charges and fires rings',
+    demon: 'Summons demons, slams, fires hellfire rings, teleports',
   };
   // returns true when the boss spent this frame starting a move
   function bossMove(m, dt, d, dx, dy) {

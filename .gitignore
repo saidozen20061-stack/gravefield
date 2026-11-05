@@ -6,4 +6,6 @@ Gravefield.zip
 # other pages that live in this folder but aren't part of the game
 ak47.html
 kestrel-m7.html
-AaGKkX-mIBnJ7MlKZYu9Xw-AaGKkX-mF8-AVdSCgWxNiA.jpg.jpeg
+node_modules/
+dist/
+resources/

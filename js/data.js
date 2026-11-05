@@ -185,6 +185,59 @@
     grimoire:   { fx: 'abyss', name: 'Abyssal Grasp', text: 'Every 4th shot, a tentacle erupts under a monster and stuns everything around it.', look: 'abysssoul', trail: '#a06ad0', aura: ['#a06ad0', '#3a1a5a'], arate: 11 },
     deathscep:  { fx: 'crown', name: 'Reaped Souls', text: 'Souls split in two after their first hit.', look: 'crownsoul', trail: '#d8402a', aura: ['#d8402a', '#1a1a1a'], arate: 12 },
   });
+  // every remaining weapon gets an effect of its own, so no two weapons share one (handlers: FX_* in combat.js)
+  for (const [id, fx, name, text] of [
+    // Ranger
+    ['sling', 'sting', 'Stinging Shot', 'Pebbles sometimes stun what they hit.'],
+    ['bow', 'pin', 'Pinning Arrow', 'Arrows slow what they hit.'],
+    ['hunter', 'mark', "Hunter's Mark", 'The first hit marks a monster; the next one tears the mark open for bonus damage.'],
+    ['xbow', 'bleed', 'Deep Wound', 'Heavy bolts leave monsters bleeding.'],
+    ['repeater', 'overdrive', 'Overdrive', 'Every 6th shot fires two extra bolts.'],
+    ['blunder', 'blowback', 'Blowback', 'Lead balls hurl monsters far backwards.'],
+    ['frostbow', 'shatter', 'Shatter', 'Arrows slow what they hit and burst into three ice shards.'],
+    ['thunderbow', 'skybolt', 'Sky Bolt', 'Hits can call lightning from the sky, stunning everything around the target.'],
+    ['sunbow', 'sunfire', 'Solar Flare', 'Monsters you kill erupt in sunfire that burns the crowd around them.'],
+    // Warrior
+    ['club', 'bonk', 'Bonk', 'Hits sometimes knock monsters senseless.'],
+    ['sword', 'riposte', 'Riposte', 'Every 5th swing is a full spin that cuts all around you.'],
+    ['mace', 'gash', 'Gash', 'Iron spikes leave monsters bleeding.'],
+    ['axe', 'backcut', 'Back Cut', 'Every swing also chops whatever is behind you.'],
+    ['scimitar', 'dance', 'Blade Dance', 'Every swing carries you forward a step.'],
+    ['halberd', 'thrust', 'Long Thrust', 'Every swing ends in a stab far beyond your reach.'],
+    ['frostblade', 'icering', 'Ice Ring', 'Every 3rd swing bursts a ring of ice around you that slows everything it touches.'],
+    ['stormblade', 'arc', 'Storm Arc', 'Hits can jump as lightning to a nearby monster.'],
+    ['dragonslayer', 'scorch', 'Scorched Earth', 'Every swing leaves the ground ahead of you burning.'],
+    // Mage
+    ['appr', 'echo', 'Echo', 'Bolts sometimes strike a second time.'],
+    ['wand', 'cinder', 'Cinders', 'Fireballs set what they hit alight.'],
+    ['oak', 'regrowth', 'Regrowth', 'Every kill heals you a little.'],
+    ['frost', 'deepfreeze', 'Deep Freeze', 'Three hits on one monster freeze it solid.'],
+    ['ember', 'embers', 'Flying Embers', 'Blasts spit three burning embers in all directions.'],
+    ['crystal', 'prism', 'Prism', 'Shards grow stronger with each monster they pierce.'],
+    ['tempest', 'tempest', 'Tempest', 'Every 4th shot brings lightning down on up to 5 monsters.'],
+    ['solar', 'sunburst', 'Sunburst', 'Blasts sear a huge area, leaving everything in it burning.'],
+    ['eternity', 'timeslow', 'Slow Eternity', 'Blasts bend time, slowing every monster in a huge area.'],
+    // Rogue
+    ['knife', 'nick', 'Nick', 'Critical hits leave monsters bleeding.'],
+    ['kunai', 'tether', 'Tether', 'Kunai drag what they hit towards you.'],
+    ['dagger', 'siphon', 'Siphon', 'Critical hits heal you.'],
+    ['star', 'boomerang', 'Boomerang', 'Stars turn back after their first hit.'],
+    ['chakram', 'seeker', 'Seeking Ring', 'After each hit, rings turn towards the next monster.'],
+    ['venom', 'neurotoxin', 'Neurotoxin', 'Poison also slows what it infects.'],
+    ['ghostblade', 'haunt', 'Haunting', 'Hits can drop a ghostly sword on the target.'],
+    ['bloodstar', 'bloodpact', 'Blood Pact', 'The less health you have, the more damage stars deal.'],
+    ['oblivion', 'erase', 'Erase', 'Monsters below 15% health vanish outright. Kings are immune.'],
+    // Summoner
+    ['bone', 'spike', 'Bone Spike', 'Hits sometimes drive a spike of bone up under the target.'],
+    ['rod', 'wail', 'Wail', 'Hits sometimes scream, stunning monsters nearby.'],
+    ['charm', 'lucky', 'Lucky Charm', 'Kills sometimes drop extra gold.'],
+    ['necro', 'rot', 'Spreading Rot', 'Kills poison the monsters around them.'],
+    ['censer', 'snare', 'Smoke Snare', 'Hits sometimes open a wisp of smoke that pulls monsters in.'],
+    ['ossuary', 'bonecage', 'Bone Burst', 'Kills burst into six shards of bone.'],
+    ['wraithstaff', 'wraithchill', 'Wraith Chill', 'Souls slow everything around the monster they hit.'],
+    ['grimoire', 'curse', 'Curse', 'Cursed monsters explode when they die.'],
+    ['deathscep', 'harvest', 'Harvest', 'Every kill shortens your Q and E cooldowns.'],
+  ]) WFX[id] = Object.assign({}, WFX[id], { fx, name, text });
   for (const w of WEAPONS) {
     const f = WFX[w.id];
     if (!f) continue;

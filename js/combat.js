@@ -522,6 +522,7 @@
       if (ST.stun && !m.boss) m.stunT = Math.max(m.stunT || 0, ST.stun);
       if (ST.burn) m.poison = { dps: ST.dmg * 0.3, t: 3, acc: 0, fire: true };
       if (ST.chill) m.slowT = Math.max(m.slowT || 0, 2);
+      const mh = FX_MELEE[curFx()]; if (mh) mh(m, a);
       // impact: a spray of sparks flung along the swing, in the blade's colour
       const ix = m.x, iy = m.y - m.hh, tan = a + P.swingDir * Math.PI / 2;
       for (let k = 0; k < 7; k++) {
@@ -595,10 +596,99 @@
       type: 'wave', look, life: 0.5, hit: new Set(), burn, trail: look === 'wavefire' ? '#ff9a3c' : look === 'wavegold' ? '#ffd84d' : '#cfe9ff' });
   }
   function xslash(x, y, c) { G.fx.push({ xslash: true, x, y, t: 0.22, c }); }
+  // ---- the one-of-a-kind weapon effects, looked up by the weapon's fx id ----
+  const fxHit = (m, d) => { if (!m.dead && m.rise <= 0) damage(m, d, 0, 0); };
+  const fxStun = (m, t) => { if (!m.boss) m.stunT = Math.max(m.stunT || 0, t); };
+  const fxSlow = (m, t) => { m.slowT = Math.max(m.slowT || 0, t); };
+  const fxBleed = (m, dps, t = 3) => { m.poison = { dps, t, acc: 0 }; };
+  const fxHeal = k => { P.hp = Math.min(ST.maxHp, P.hp + ST.maxHp * k); };
+  const fxRing = (x, y, max, c) => G.fx.push({ ring: true, x, y, t: 0.3, max, c });
+  const fxBolt = m => G.fx.push({ bolt: true, x: m.x, y: m.y - m.hh, t: 0.2, seed: Math.random() * 99 });
+  const fxAround = (x, y, r, fn) => { for (const m of G.monsters) if (!m.dead && m.rise <= 0 && Math.hypot(m.x - x, m.y - y) < r + m.r) fn(m); };
+  const fxShards = (x, y, n, dmg, trail, hit) => {
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2 + Math.random();
+      G.shots.push({ x, y, vx: Math.cos(a) * 200, vy: Math.sin(a) * 200, dmg, pierce: 0, chain: 0, splash: 0, type: 'shard', look: 'starorb', k: 0.5, life: 0.35, hit: new Set(hit), trail });
+    }
+  };
+  const FX_SWING = {
+    riposte: (a, D) => { if (G.swings % 5 === 0) { aoe(P.x, P.y - 8, ST.reach, D, { kb: 120 }); fxRing(P.x, P.y - 8, ST.reach + 8, '#ffffff'); } },
+    backcut: (a, D) => { const x = P.x - Math.cos(a) * ST.reach * 0.6, y = P.y - 8 - Math.sin(a) * ST.reach * 0.6; aoe(x, y, ST.reach * 0.6, D * 0.6, {}); xslash(x, y, '#ffffff'); },
+    dance: a => { P.vx += Math.cos(a) * 70; P.vy += Math.sin(a) * 70; },
+    thrust: (a, D) => { const x = P.x + Math.cos(a) * ST.reach * 1.5, y = P.y - 8 + Math.sin(a) * ST.reach * 1.5; aoe(x, y, 12, D * 0.8, {}); xslash(x, y, '#c9ced2'); },
+    icering: (a, D) => { if (G.swings % 3 === 0) { aoe(P.x, P.y - 8, 45, D * 0.5, {}); fxAround(P.x, P.y, 45, m => fxSlow(m, 2.5)); fxRing(P.x, P.y - 8, 50, '#9fe0ff'); } },
+    scorch: (a, D) => addZone({ kind: 'fire', x: P.x + Math.cos(a) * ST.reach, y: P.y + Math.sin(a) * ST.reach * 0.7, r: 24, t: 2, dps: D * 0.3 }),
+  };
+  const FX_MELEE = {
+    bonk: m => { if (Math.random() < 0.2) fxStun(m, 0.5); },
+    gash: m => fxBleed(m, ST.dmg * 0.25),
+    arc: m => {
+      if (Math.random() > 0.25) return;
+      const t = nearest(m.x, m.y - m.hh, 90, new Set([m]));
+      if (t) { fxBolt(t); fxHit(t, ST.dmg * 0.8); sfx.zap(); }
+    },
+  };
+  const fxExtraShot = (a, sx, sy, D) => G.shots.push({ x: sx, y: sy, vx: Math.cos(a) * ST.spd, vy: Math.sin(a) * ST.spd, dmg: D, pierce: ST.pierce, chain: 0, splash: 0, type: ST.shot, look: null, life: ST.range * 1.5 / ST.spd, hit: new Set(), wfx: null });
+  const FX_FIRE = {
+    overdrive: (a, sx, sy, D) => { if (G.fired % 6 === 0) for (const da of [-0.12, 0.12]) fxExtraShot(a + da, sx, sy, D); },
+    tempest: (a, sx, sy, D) => {
+      if (G.fired % 4) return;
+      const near = G.monsters.filter(m => !m.dead && m.rise <= 0 && Math.hypot(m.x - P.x, m.y - P.y) < 170).sort(() => Math.random() - 0.5).slice(0, 5);
+      for (const m of near) { fxBolt(m); fxHit(m, D); }
+      if (near.length) sfx.zap();
+    },
+  };
+  const FX_HIT = {
+    sting: (s, m) => { if (Math.random() < 0.12) fxStun(m, 0.4); },
+    pin: (s, m) => fxSlow(m, 1.2),
+    mark: (s, m, c, D) => { if (m.marked) { m.marked = false; xslash(m.x, m.y - m.hh, '#ffb347'); fxHit(m, D * 0.8); } else m.marked = true; },
+    bleed: (s, m, c, D) => fxBleed(m, D * 0.3),
+    blowback: (s, m) => { if (!m.boss && !m.ab.mighty) { const d = Math.hypot(s.vx, s.vy) || 1; m.kx = s.vx / d * 260; m.ky = s.vy / d * 260; } },
+    shatter: (s, m, c, D) => { fxSlow(m, 2); fxShards(s.x, s.y, 3, D * 0.35, '#bfe4ff', s.hit); },
+    skybolt: (s, m, c, D) => { if (Math.random() < 0.2) { fxBolt(m); aoe(m.x, m.y - m.hh * 0.5, 24, D, { stun: 0.6 }); sfx.zap(); } },
+    echo: (s, m, c, D) => { if (Math.random() < 0.25) fxHit(m, D * 0.6); },
+    cinder: (s, m, c, D) => { m.poison = { dps: D * 0.3, t: 2.5, acc: 0, fire: true }; },
+    deepfreeze: (s, m) => { m.chillN = (m.chillN || 0) + 1; if (m.chillN >= 3) { m.chillN = 0; fxStun(m, 1.5); fxRing(m.x, m.y - m.hh, 18, '#9fe0ff'); } },
+    prism: s => { s.dmg *= 1.25; },
+    nick: (s, m, crit, D) => { if (crit) fxBleed(m, D * 0.4); },
+    tether: (s, m) => { if (!m.boss && !m.ab.mighty) { const dx = P.x - m.x, dy = P.y - m.y, d = Math.hypot(dx, dy) || 1; m.kx = dx / d * 130; m.ky = dy / d * 130; } },
+    siphon: (s, m, crit) => { if (crit) fxHeal(0.01); },
+    boomerang: s => { if (!s.turned) { s.turned = true; s.vx = -s.vx; s.vy = -s.vy; s.life = Math.max(s.life, 0.5); } },
+    seeker: (s, m) => {
+      const t = nearest(s.x, s.y, 120, s.hit);
+      if (!t) return;
+      const sp = Math.hypot(s.vx, s.vy), a = Math.atan2((t.y - t.hh) - s.y, t.x - s.x);
+      s.vx = Math.cos(a) * sp; s.vy = Math.sin(a) * sp;
+    },
+    neurotoxin: (s, m, c, D) => { fxSlow(m, 2); fxBleed(m, D * 0.3); },
+    haunt: (s, m, c, D) => { if (Math.random() < 0.2) addStrike({ x: m.x, y: m.y, t: 0.3, r: 14, dmg: D * 1.5, kind: 'sword' }); },
+    bloodpact: (s, m, c, D) => fxHit(m, D * (1 - P.hp / ST.maxHp)),
+    erase: (s, m) => { if (!m.dead && !m.boss && !m.d.grinner && !m.d.crawler && m.hp < m.max * 0.15) { xslash(m.x, m.y - m.hh, '#ff6ad0'); fxHit(m, m.hp + 1); } },
+    spike: (s, m, c, D) => { if (Math.random() < 0.15) addStrike({ x: m.x, y: m.y, t: 0.25, r: 12, dmg: D * 1.5, kind: 'bone' }); },
+    wail: (s, m) => { if (Math.random() < 0.12) { fxAround(m.x, m.y, 30, o => fxStun(o, 0.6)); fxRing(m.x, m.y - m.hh, 34, '#dfe7ff'); } },
+    snare: (s, m, c, D) => { if (Math.random() < 0.2) addZone({ kind: 'vortex', x: m.x, y: m.y, r: 24, t: 0.8, dps: D * 0.1, pull: 1.4 }); },
+    wraithchill: (s, m) => { fxAround(m.x, m.y, 26, o => fxSlow(o, 1.5)); },
+    curse: (s, m) => { m.cursed = true; },
+  };
+  const FX_BLAST = {
+    embers: s => fxShards(s.x, s.y, 3, s.dmg * 0.4, '#ff9a3c', s.hit),
+    sunburst: s => { aoe(s.x, s.y, 55, s.dmg * 0.4, { burn: true }); fxRing(s.x, s.y, 60, '#ffd84d'); },
+    timeslow: s => { fxAround(s.x, s.y, 90, m => fxSlow(m, 3)); fxRing(s.x, s.y, 95, '#ffffff'); },
+  };
+  const FX_KILL = {
+    sunfire: (m, D) => { aoe(m.x, m.y - m.hh * 0.5, 28, D * 0.6, { burn: true }); fxRing(m.x, m.y - m.hh, 32, '#ffd84d'); },
+    regrowth: () => fxHeal(0.02),
+    lucky: m => { if (Math.random() < 0.25) dropAt(m.x, m.y - 4, 'gold', m.d.gold * goldMulS(S.stage) * ST.goldMul * 2); },
+    rot: (m, D) => { fxAround(m.x, m.y, 32, o => fxBleed(o, D * 0.3)); fxRing(m.x, m.y - m.hh, 34, '#6ee07a'); },
+    bonecage: (m, D) => fxShards(m.x, m.y - m.hh, 6, D * 0.4, '#e9e4d4', [m]),
+    curse: (m, D) => { if (m.cursed) { aoe(m.x, m.y - m.hh * 0.5, 30, D, {}); fxRing(m.x, m.y - m.hh, 34, '#a06ad0'); } },
+    harvest: () => { G.cd.q = Math.max(0, G.cd.q - 0.4); G.cd.e = Math.max(0, G.cd.e - 0.4); },
+  };
   function onSwing(a) {
     const fx = curFx(), D = ST.dmg;
     if (!fx) return;
     G.swings++;
+    if (FX_SWING[fx]) FX_SWING[fx](a, D);
     if (fx === 'quake') {
       const x = P.x + Math.cos(a) * ST.reach * 0.8, y = P.y - 2 + Math.sin(a) * ST.reach * 0.6;
       aoe(x, y, 22, D * 0.6, { stun: 0.6, kb: 140 });
@@ -621,6 +711,7 @@
     const fx = curFx();
     if (!fx) return;
     G.fired++;
+    if (FX_FIRE[fx]) FX_FIRE[fx](a, sx, sy, ST.dmg);
     if (fx === 'ricochet' || fx === 'dragonfire')
       for (let i = 0; i < 3; i++) G.fx.push({ x: sx, y: sy, vx: Math.cos(a) * rand(8, 20) + rand(-6, 6), vy: rand(-20, -6), t: 0.7, c: 'rgba(220,210,190,0.6)', s: 3, nograv: true, smoke: true });
     if (fx === 'abyss' && G.fired % 4 === 0) {
@@ -633,6 +724,7 @@
     const f = s.wfx;
     if (!f) return;
     const D = s.dmg;
+    if (FX_HIT[f.fx]) FX_HIT[f.fx](s, m, crit, D);
     switch (f.fx) {
       case 'vines': if (!m.boss) m.stunT = Math.max(m.stunT || 0, 0.8); addZone({ kind: 'vines', x: m.x, y: m.y, r: 16, t: 1.6, dps: D * 0.2 }); break;
       case 'starfall':
@@ -656,6 +748,7 @@
   function onExplode(s) {
     const f = s.wfx;
     if (!f) return;
+    if (FX_BLAST[f.fx]) FX_BLAST[f.fx](s);
     if (f.fx === 'dragonfire') addZone({ kind: 'fire', x: s.x, y: s.y + 4, r: 24, t: 2.5, dps: s.dmg * 0.5 });
     if (f.fx === 'arcane') addZone({ kind: 'vortex', x: s.x, y: s.y + 4, r: 30, t: 1, dps: s.dmg * 0.3, pull: 1.6 });
     if (f.fx === 'void') addZone({ kind: 'vortex', x: s.x, y: s.y + 4, r: 44, t: 1.8, dps: s.dmg * 0.5, pull: 3, implode: s.dmg * 2, big: true });
@@ -667,6 +760,7 @@
   }
   function onKill(m) {
     const fx = curFx();
+    if (FX_KILL[fx]) FX_KILL[fx](m, ST.dmg);
     if (fx === 'lich' && Math.random() < 0.35 && G.minions.filter(x => x.lich).length < 3) {
       G.minions.push({ kind: 'skel', lich: true, x: m.x, y: m.y, t: 8, cd: 0.3, face: 1, ph: 0, i: G.minions.length, rise: 0.4 });
       for (let k = 0; k < 10; k++) G.fx.push({ x: m.x + rand(-5, 5), y: m.y, vx: rand(-15, 15), vy: rand(-45, -10), t: 0.6, c: k % 2 ? '#7fe8ff' : '#6ee07a', s: 2, nograv: true });

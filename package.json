@@ -1,0 +1,26 @@
+{
+  "name": "gravefield",
+  "productName": "Gravefield",
+  "version": "1.0.0",
+  "description": "An incremental pixel monster-shooter",
+  "author": "saidozen20061-stack",
+  "main": "electron-main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "io.github.saidozen20061stack.gravefield",
+    "productName": "Gravefield",
+    "directories": { "output": "dist" },
+    "files": ["electron-main.js", "electron-preload.js", "updater.html", "manifest.json", "index.html", "style.css", "js/**/*", "build/icon.png"],
+    "win": { "target": "nsis", "icon": "build/icon.ico" },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Gravefield"
+    }
+  }
+}
