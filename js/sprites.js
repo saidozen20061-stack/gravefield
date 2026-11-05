@@ -612,6 +612,12 @@
     const base = crawlerRows(kind, 0), diff = pose => { const o = {}; crawlerRows(kind, pose).forEach((row, i) => { if (row !== base[i]) o[i] = row; }); return o; };
     ANIM[kind] = { walk: [1, 2, 3, 4, 5, 6].map(diff), atk: diff('atk') };
   }
+  // monsters are flipped assuming they're drawn facing right; these were drawn facing left, so they walked backwards
+  for (const k of ['scorpion', 'leech', 'lavaslug', 'vulture']) {
+    const flip = r => [...r].reverse().join(''), an = ANIM[k], flipAll = o => { for (const i in o) o[i] = flip(o[i]); };
+    MON[k].spr = sprite(MON[k].spr.rows.map(flip), MON[k].spr.pal);
+    an.walk.forEach(flipAll); flipAll(an.atk);
+  }
   for (const k of MON_KEYS) {
     const d = MON[k], an = ANIM[k];
     d.walk = an.walk.map(e => variant(d.spr, e));

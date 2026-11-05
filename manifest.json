@@ -1,10 +1,10 @@
 {
- "version": 1793847202974,
+ "version": 1793848425429,
  "files": [
   {
    "path": "index.html",
-   "size": 18749,
-   "sha256": "1d4aca64c3b63a4ce90c71f58603504e219f16d986da1bb6b211a7823c405d1d"
+   "size": 18787,
+   "sha256": "434847fcf17756bd7f088796b3861ea1ba8f3da6720ad1f12dcbb344e2ade809"
   },
   {
    "path": "style.css",
@@ -47,6 +47,11 @@
    "sha256": "cd3758e222a6f0732223ff4b2ee5587ef98f0fd8ae69e23ce2d3a0b593b51f78"
   },
   {
+   "path": "js/dragon.js",
+   "size": 5355,
+   "sha256": "bfe16e82c67e22513edeaf66f4e3d3a148c630f9b12076468c5e4e1e632b805d"
+  },
+  {
    "path": "js/helpers.js",
    "size": 968,
    "sha256": "1040d2145b0be1ef970afccdfa45b77e61d2001813357d88b5d26f2c8cbe76af"
@@ -78,13 +83,13 @@
   },
   {
    "path": "js/menu.js",
-   "size": 27573,
-   "sha256": "415b3f1e988ca848cc6834bad60a3e73fb67c55c553c5fd111e85af5867cc31a"
+   "size": 27987,
+   "sha256": "b2fbe69d5925f815470bc0a70b5a93f4d9a6d3029579bcdc984aa1a7ba1c7126"
   },
   {
    "path": "js/meta.js",
-   "size": 34401,
-   "sha256": "ccd44d8cf3ed02153c2ac073e89a92a069c9cbda71d8e567453f5b1d7f1e287b"
+   "size": 34561,
+   "sha256": "0e3b58fbc2801826d57068eed5f95acd6ab821ecc95e72f77973a609867642f9"
   },
   {
    "path": "js/player.js",
@@ -93,13 +98,13 @@
   },
   {
    "path": "js/render.js",
-   "size": 43766,
-   "sha256": "437e95bee39b14b725b384f0f27b0ef13d242476e7cf2107683aaa129ab0f6e8"
+   "size": 43788,
+   "sha256": "d6b0edc5051f78810ea3f486b31d34cc4ad231230101432e552f11af951c3af8"
   },
   {
    "path": "js/sprites.js",
-   "size": 37413,
-   "sha256": "8c0e34b2fde15a1ab67d8e42b2f7676e63a2398751d37fe21d35553d071cbd5b"
+   "size": 37843,
+   "sha256": "59cf6257e6a801f855494b361429e02cb536f862d8e3f019cb0ac3953ca7d352"
   },
   {
    "path": "js/stages.js",
@@ -108,13 +113,13 @@
   },
   {
    "path": "js/state.js",
-   "size": 8414,
-   "sha256": "e396b6d8878c6b4d51399418c9ec8354946e37a7fe73015c92a7e488f71fdb5f"
+   "size": 8441,
+   "sha256": "12a48754282562df7be956321276f3d4ff1728be7c915079feaad44c6227db78"
   },
   {
    "path": "js/update.js",
-   "size": 26435,
-   "sha256": "22cc79290d8a88e2cb262d7fedce4db96e4bec2ded435ba7662b83a01d1b98fd"
+   "size": 26458,
+   "sha256": "d4b22086d7cd4c9135797db65686ead20e45742790cddbb592a308626cb46423"
   },
   {
    "path": "js/world.js",

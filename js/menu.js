@@ -92,7 +92,7 @@
     G.flashT = f >= 0.75 && f < 0.78 ? 0.05 : 0;
     ctx = mctx;
     for (const e of ents) {
-      if (e.s) drawSprite(e.s.spr, e.s.x, e.s.y, 1, false, false, 1);
+      if (e.s) drawSprite(e.s.base || e.s.spr, e.s.x, e.s.y, 1, false, false, 1); // base: the menu stays green whatever biome the save is in
       else if (e.mob) { const m = e.mob; drawSprite(m.spr, m.x, m.y - m.lift, m.scale, m.flip, m.flash, m.alpha, m.sx, m.sy); }
       else {
         const hs = hero(A(S.armor), P.dir, Math.floor(t / 0.7) % 2 ? 'i1' : 'i0', (t % 3.4) < 0.12, false);
@@ -370,6 +370,9 @@
   // three boards: this device's profiles, everyone online, and today's daily challenge
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   let boardTab = 'local';
+  // runs that reached the Dragon come first, fastest on top
+  const byDragon = (a, b) => (a.dragon || Infinity) === (b.dragon || Infinity) ? 0 : (a.dragon || Infinity) < (b.dragon || Infinity) ? -1 : 1;
+  const dragonCell = r => r.dragon ? `<b>${fmtTime(r.dragon)}</b>` : fmtTime(r.time || 0);
   function boardRows(rows, head, cell) {
     const list = $('boardList');
     list.innerHTML = `<div class="brow bhead">${head.map(h => `<span>${h}</span>`).join('')}</div>` + rows.map((r, i) => {
@@ -390,15 +393,15 @@
     $('nickIn').value = getNick();
     const list = $('boardList'), empty = t => { list.innerHTML = `<div class="frame bempty">${t}</div>`; };
     if (boardTab === 'local') {
-      boardNote('Every profile played on this device, ranked by best stage. Runs marked "admin" used the admin panel.');
+      boardNote('Ranked by the fastest time to reach the Dragon at stage 100, then by best stage. Runs marked "admin" used the admin panel.');
       const live = new Map([1, 2, 3].map(n => [readSlot(n), n]).filter(([d]) => d).map(([d, n]) => [d.pid, n]));
       const rows = Object.entries(readBoard()).map(([pid, r]) => Object.assign({ pid }, r))
-        .sort((a, b) => b.best - a.best || b.level - a.level || b.kills - a.kills).slice(0, 10);
+        .sort((a, b) => byDragon(a, b) || b.best - a.best || b.level - a.level || b.kills - a.kills).slice(0, 10);
       if (!rows.length) return empty('No runs yet. Press PLAY to start your first hunt!');
       return boardRows(rows, ['#', '', 'Hunter', 'Best stage', 'Level', 'Kills', 'Time'], r => {
         const n = live.get(r.pid), cur = r.pid === S.pid && slotLive;
         return { cur, name: (CLASSES[r.cls] || CLASSES.ranger).name, sub: (n ? `Slot ${n}${cur ? ' · playing' : ''}` : 'Retired run') + (r.cheated ? ' · admin' : '') + (r.rebirths ? ` · ${r.rebirths}✦` : ''),
-          cols: [`<b>${r.best}</b>`, r.level, fmt(r.kills), fmtTime(r.time || 0)] };
+          cols: [`<b>${r.best}</b>`, r.level, fmt(r.kills), dragonCell(r)] };
       });
     }
     boardNote(netNote());
@@ -409,11 +412,11 @@
       return empty(NET.status === 'wait' ? 'Connecting…' : 'The online board is not available here.');
     }
     if (boardTab === 'online') {
-      const rows = NET.rows.filter(r => r.best > 0).sort((a, b) => b.best - a.best || (b.kills || 0) - (a.kills || 0)).slice(0, 50);
+      const rows = NET.rows.filter(r => r.best > 0).sort((a, b) => byDragon(a, b) || b.best - a.best || (b.kills || 0) - (a.kills || 0)).slice(0, 50);
       if (!rows.length) return empty('No online scores yet. Clear a stage to post yours!');
       return boardRows(rows, ['#', '', 'Hunter', 'Best stage', 'Level', 'Kills', 'Time'], r => ({
         cur: r.id === NET.uid, name: r.nick || 'Hunter', sub: (CLASSES[r.cls] || CLASSES.ranger).name + (r.id === NET.uid ? ' · you' : '') + (r.rebirths ? ` · ${r.rebirths}✦` : ''),
-        cols: [`<b>${r.best}</b>`, r.level || 1, fmt(r.kills || 0), fmtTime(r.time || 0)] }));
+        cols: [`<b>${r.best}</b>`, r.level || 1, fmt(r.kills || 0), dragonCell(r)] }));
     }
     const rows = NET.rows.filter(r => r.dailyDate === today).sort((a, b) => b.dailyStage - a.dailyStage || b.dailyKills - a.dailyKills);
     if (!rows.length) return empty("Nobody has finished today's daily yet. Be the first!");

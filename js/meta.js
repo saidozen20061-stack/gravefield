@@ -36,6 +36,7 @@
       Object.assign(body, { best, level: S.level, kills: S.kills, cls: S.cls, armor: S.armor, time: Math.round(S.time || 0), rebirths: S.rebirths || 0 });
       changed = true;
     }
+    if (!S.cheated && !S.daily && S.dragonTime && (!me || !me.dragon || S.dragonTime < me.dragon)) { body.dragon = Math.round(S.dragonTime); changed = true; }
     const p = G.dailyPost;
     if (p) {
       G.dailyPost = null;

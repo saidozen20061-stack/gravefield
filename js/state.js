@@ -42,7 +42,7 @@
   function recordRun() {
     if (!S || !S.pid || S.daily) return;
     const b = readBoard();
-    b[S.pid] = { cls: S.cls, armor: S.armor, level: S.level, best: bestOf(S), kills: S.kills, time: S.time || 0, slot, at: Date.now(), cheated: !!S.cheated, rebirths: S.rebirths || 0 };
+    b[S.pid] = { cls: S.cls, armor: S.armor, level: S.level, best: bestOf(S), kills: S.kills, time: S.time || 0, dragon: S.dragonTime || 0, slot, at: Date.now(), cheated: !!S.cheated, rebirths: S.rebirths || 0 };
     try { localStorage.setItem(BOARD_KEY, JSON.stringify(b)); } catch (e) {}
   }
   function loadSave() {

@@ -141,6 +141,7 @@
       }
     }
 
+    updateDragon(dt);
     // monsters come twice as fast as they used to, and more of them can be out at once
     const swarm = dmod('swarm'), cap = Math.min(15 + S.stage * 3, 68) * (swarm ? 1.5 : 1);
     G.spawnT -= frozen ? 0 : dt;

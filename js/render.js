@@ -632,6 +632,7 @@
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const d = G.dpr;
     drawWeather(d);
+    drawDragon(G.t);
     // taking a hit: the screen flushes red, strongest at the edges, and fades out
     if (G.hurtT > 0) {
       const a = Math.min(1, G.hurtT / 0.4), Wd = cv.width, Ht = cv.height;
