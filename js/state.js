@@ -65,7 +65,7 @@
     recordRun();
   };
 
-  const G = { t: 0, monsters: [], shots: [], eshots: [], bombs: [], seen: new Set(), drops: [],
+  const G = { t: 0, echoes: [], monsters: [], shots: [], eshots: [], bombs: [], seen: new Set(), drops: [],
     chests: [], chestT: 12, hazards: [], books: [], bookT: 0, pet: { x: 0, y: 0, t: 0, cd: 0 }, buffs: {}, buffMax: {}, flameT: 0, stormT: 0, whiteT: 0,
     cd: { q: 0, e: 0 }, invisT: 0, whirlT: 0, whirlTick: 0, rains: [], minions: [], zones: [], strikes: [], swings: 0, fired: 0, bursts: [], darkT: 0, fx: [], texts: [], spawnT: 0, fireT: 0, boss: null, dead: 0, paused: false, choosing: false,
     vacuum: 0, shake: 0, zoom: 3, dpr: 1, joy: null, aim: { has: false, sx: 0, sy: 0, down: false, id: null }, flashT: 0, cam: { x: 0, y: 0, ox: 0, oy: 0 } };
@@ -115,6 +115,7 @@
     o.rate *= pc('rate'); o.maxHp *= pc('hp'); o.def *= pc('armor'); o.speed *= pc('speed');
     o.crit = Math.min(0.85, o.crit + (tf.crit || 0) / 100); o.critMul += (tf.critdmg || 0) / 100;
     o.reach *= pc('reach'); o.arc *= pc('reach'); o.range *= pc('range'); o.spd *= pc('range');
+    if (o.melee) { const k = 1 + 0.15 * o.pierce; o.reach *= k; o.arc *= k; } // Titan's Edge
     o.shots += tf.multi || 0; o.chain += tf.chain || 0; o.minions += tf.minions || 0; o.minionMul *= pc('minion');
     o.cdr = Math.min(0.5, (tf.cdr || 0) / 100); o.leech = (tf.leech || 0) / 100; o.ambush = tf.ambush || 0;
     // the pet at your side

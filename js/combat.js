@@ -509,8 +509,8 @@
   function handPos(a) { return { x: Math.round(P.x) + Math.cos(a) * 2, y: Math.round(P.y) - 8 + bodyLift() + Math.sin(a) * 1.5 }; }
 
   // melee: one swing hits everything inside an arc in front of you; extra "projectiles" widen the arc
-  function slash(a, mult = 1) {
-    const reach = ST.reach, arc = Math.min(Math.PI * 1.9, ST.arc * (1 + 0.25 * (ST.shots - 1))), hx = P.x, hy = P.y - 8;
+  function slash(a, mult = 1, echo = false) {
+    const reach = ST.reach, arc = Math.min(Math.PI * 1.9, ST.arc), hx = P.x, hy = P.y - 8;
     let hits = 0;
     for (const m of G.monsters) {
       if (m.dead || m.rise > 0) continue;
@@ -532,6 +532,9 @@
       hits++;
     }
     G.fx.push({ slash: true, x: hx, y: hy, a, r: reach, arc, t: 0.2, T: 0.2, c: ST.slashCol || '#ffffff', dir: P.swingDir, style: ST.slashStyle });
+    if (echo) { if (hits) sfx.shoot('slash'); return; }
+    // Aftershock: each extra "shot" repeats the swing, 0.05 s apart
+    for (let i = 1; i < ST.shots; i++) G.echoes.push({ t: i * 0.05, a, mult: mult * 0.6 });
     // a hammer's swing ends in a shockwave and flying grit where it lands
     if (ST.slashStyle === 'quake') {
       const qx = hx + Math.cos(a) * reach * 0.8, qy = hy + 8 + Math.sin(a) * reach * 0.6;

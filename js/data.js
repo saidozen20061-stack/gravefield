@@ -390,8 +390,11 @@
     { id: 'magnet',  icon: 'MAG', base: 15,  name: () => 'Magnet',       desc: 'Pull in gold and XP from further away.', text: v => `+${v}% pickup range` },
     { id: 'xp',      icon: 'XP',  base: 6,   name: () => 'Scholar',      desc: 'Earn more XP from every kill.',        text: v => `+${v}% XP` },
     { id: 'greed',   icon: 'GLD', base: 8,   name: () => 'Greed',        desc: 'Earn more gold from every kill.',      text: v => `+${v}% gold` },
-    { id: 'multi',   icon: 'x2',  flat: [0, 0, 1, 1, 2], minR: 2, cap: 6, name: v => SHOT_NAMES[Math.min(7, 1 + bonus('multi') + v)], desc: 'Fire more projectiles with every shot.', text: v => `+${v} projectile${v > 1 ? 's' : ''}` },
-    { id: 'pierce',  icon: 'PRC', flat: [0, 0, 1, 1, 2], minR: 2, cap: 6, name: () => 'Piercing', desc: 'Shots pass through extra monsters.', text: v => `+${v} pierce` },
+    // melee has no projectiles: for melee classes these two cards become repeat strikes and a bigger swing
+    { id: 'multi',   get icon() { return ST.melee ? 'ECH' : 'x2'; }, flat: [0, 0, 1, 1, 2], minR: 2, cap: 6, name: v => ST.melee ? 'Aftershock' : SHOT_NAMES[Math.min(7, 1 + bonus('multi') + v)],
+      get desc() { return ST.melee ? 'Your swing strikes again 0.05 seconds later for 60% damage.' : 'Fire more projectiles with every shot.'; }, text: v => ST.melee ? `+${v} repeat strike${v > 1 ? 's' : ''}` : `+${v} projectile${v > 1 ? 's' : ''}` },
+    { id: 'pierce',  get icon() { return ST.melee ? 'SIZ' : 'PRC'; }, flat: [0, 0, 1, 1, 2], minR: 2, cap: 6, name: () => ST.melee ? "Titan's Edge" : 'Piercing',
+      get desc() { return ST.melee ? 'Your swings grow longer and wider.' : 'Shots pass through extra monsters.'; }, text: v => ST.melee ? `+${v * 15}% swing size` : `+${v} pierce` },
   ];
   // ---- insane mode (a device setting, never in the daily challenge): level-up cards give double, and the % ones compound;
   // armor and regeneration stay exactly as in normal mode so nothing becomes unkillable. XP and gold are doubled too (in stats()). ----

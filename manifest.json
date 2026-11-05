@@ -1,5 +1,5 @@
 {
- "version": 1793848425429,
+ "version": 1793849118504,
  "files": [
   {
    "path": "index.html",
@@ -18,8 +18,8 @@
   },
   {
    "path": "js/ascension.js",
-   "size": 17374,
-   "sha256": "ace06417f11b31023bdf93a9048b037aaffc63f0146ab001bcd0047cc7ccc2d9"
+   "size": 17400,
+   "sha256": "8cf567ea981ed1f68670f012a2ff1d164300be1d2d25672d3b93ec0983a459ad"
   },
   {
    "path": "js/audio.js",
@@ -38,13 +38,13 @@
   },
   {
    "path": "js/combat.js",
-   "size": 66989,
-   "sha256": "b5ffd759175dc4f20787d3b8152b59c17531dfe01b595ba2e5d6fd28fa4f4866"
+   "size": 67193,
+   "sha256": "c7f82e900e217930f8edda76a31e354503917ab2cd92fe419c1d823aeeb8c444"
   },
   {
    "path": "js/data.js",
-   "size": 52288,
-   "sha256": "cd3758e222a6f0732223ff4b2ee5587ef98f0fd8ae69e23ce2d3a0b593b51f78"
+   "size": 52787,
+   "sha256": "f738217ef478bf3d1978da8c57cda2910365c2bd59d14ec8a770203f651f6158"
   },
   {
    "path": "js/dragon.js",
@@ -58,8 +58,8 @@
   },
   {
    "path": "js/hud.js",
-   "size": 29131,
-   "sha256": "958b2cd6b762f72838d108a2eb85833e16de6ef2071569c5084b6337359cbf6a"
+   "size": 29226,
+   "sha256": "e46ea424be0a6a5c35f2f3820ae9f07bd8f8a332e858cf33c24ec6a42e02f154"
   },
   {
    "path": "js/input.js",
@@ -113,13 +113,13 @@
   },
   {
    "path": "js/state.js",
-   "size": 8441,
-   "sha256": "12a48754282562df7be956321276f3d4ff1728be7c915079feaad44c6227db78"
+   "size": 8548,
+   "sha256": "8ed9d66c89f0f81014a0e2b5c734b5f166e4482b2c50096f84a6ecb3c519fa5e"
   },
   {
    "path": "js/update.js",
-   "size": 26458,
-   "sha256": "d4b22086d7cd4c9135797db65686ead20e45742790cddbb592a308626cb46423"
+   "size": 26624,
+   "sha256": "fa1e47f50a353d53b8707361ad353feaed62a88819ed9e0f4bd2dffdd896ce6f"
   },
   {
    "path": "js/world.js",

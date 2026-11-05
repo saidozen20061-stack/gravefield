@@ -154,9 +154,9 @@
     }
     $('killsTxt').textContent = fmt(S.kills) + ' monsters slain';
     $('statsBox').innerHTML =
-      `<div>DMG <b>${fmtD(ST.dmg)}</b></div><div>Rate <b>${ST.rate.toFixed(1)}/s</b></div><div>Shots <b>${ST.shots}</b></div>` +
+      `<div>DMG <b>${fmtD(ST.dmg)}</b></div><div>Rate <b>${ST.rate.toFixed(1)}/s</b></div><div>${ST.melee ? `Repeats <b>${ST.shots - 1}` : `Shots <b>${ST.shots}`}</b></div>` +
       `<div>HP <b>${fmt(ST.maxHp)}</b></div><div>Armor <b>${fmt(ST.def)}</b></div><div>Crit <b>${Math.round(ST.crit * 100)}%</b></div>` +
-      `<div>Crit dmg <b>${Math.round(ST.critMul * 100)}%</b></div><div>Pierce <b>${ST.pierce}</b></div><div>Speed <b>${Math.round(ST.speed / 70 * 100)}%</b></div>`;
+      `<div>Crit dmg <b>${Math.round(ST.critMul * 100)}%</b></div><div>${ST.melee ? `Size <b>+${ST.pierce * 15}%` : `Pierce <b>${ST.pierce}`}</b></div><div>Speed <b>${Math.round(ST.speed / 70 * 100)}%</b></div>`;
     document.querySelectorAll('#list button.buy').forEach(b => { b.disabled = S.gold < +b.dataset.cost; });
     const CW = classItems(WEAPONS, S.cls), CA = classItems(ARMORS, S.cls), wn = nextIdx(CW, S.wOwn), an = nextIdx(CA, S.aOwn);
     $('pill-weapons').hidden = !CW.some((w, i) => S.wOwn[w.id] == null ? i === wn && S.gold >= w.cost : (w.id === S.weapon && S.wOwn[w.id] < MAX_ITEM_LV && S.gold >= itemUpCost(w, S.wOwn[w.id])));

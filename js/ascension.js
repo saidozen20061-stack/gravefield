@@ -1,7 +1,7 @@
   // ================= the Ascension screen: the world fades to black and the constellation wakes up =================
   const ASC_FX_TXT = { dmg: '% damage', rate: '% attack rate', hp: '% max health', armor: '% armor', speed: '% move speed', crit: '% crit chance',
     critdmg: '% crit damage', range: '% range', cdr: '% faster Q and E', leech: '% max health healed per kill', minion: '% minion damage',
-    gold: '% gold', xp: '% XP', magnet: '% pickup reach', regen: '% health regen per second', pierce: ' extra pierce' };
+    gold: '% gold', xp: '% XP', magnet: '% pickup reach', regen: '% health regen per second', pierce: ' extra pierce (melee: 15% bigger swing)' };
   const ascFxText = (fx, m) => Object.entries(fx).map(([k, v]) => k === 'undying' ? 'Once per stage, cheat death and rise again at half health' : `+${+(v * m).toFixed(2)}${ASC_FX_TXT[k]}`).join(', ');
   const ASCV = { dark: false, closing: false, t0: 0, last: 0, raf: 0, w: 0, h: 0, dpr: 1, cx: 0, cy: 0, ocx: 0, ocy: 0, u: 40, parts: [], waves: [], burst: [], hover: null, mx: -1, my: -1, unravel: 0 };
   // fixed per-node decoration: the dendrites that make each node look like a neuron

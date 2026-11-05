@@ -142,6 +142,8 @@
     }
 
     updateDragon(dt);
+    for (const e of G.echoes) { e.t -= dt; if (e.t <= 0 && G.dead <= 0) slash(e.a, e.mult, true); }
+    G.echoes = G.dead > 0 ? [] : G.echoes.filter(e => e.t > 0);
     // monsters come twice as fast as they used to, and more of them can be out at once
     const swarm = dmod('swarm'), cap = Math.min(15 + S.stage * 3, 68) * (swarm ? 1.5 : 1);
     G.spawnT -= frozen ? 0 : dt;
